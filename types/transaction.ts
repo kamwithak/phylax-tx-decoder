@@ -9,17 +9,21 @@ export interface Transaction {
 }
 
 export interface ExecutionTrace {
-  contractName: string;
+  contractAddress: string;
   methodId: string;
-  methodName: string;
+  methodName?: string;
   depth: number;
   from: string;
   to: string;
   value: string;
   input: string;
-  decodedInput?: DecodedInput;
   output?: string;
   error?: string;
+  decodedInput?: {
+    methodName: string;
+    params: DecodedParam[];
+  };
+  type?: string;
 }
 
 export interface DecodedInput {
