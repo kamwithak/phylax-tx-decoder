@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { ExecutionTrace } from '@/types/transaction';
+import { ContractNames } from '../types/contract';
 
 interface Props {
   traces: ExecutionTrace[];
@@ -9,6 +10,7 @@ interface Props {
 
 export default function ExecutionTrace({ traces }: Props) {
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
+  const [contractNames, setContractNames] = useState<ContractNames>({});
 
   const toggleRow = (traceId: string) => {
     const newExpanded = new Set(expandedRows);
@@ -24,6 +26,74 @@ export default function ExecutionTrace({ traces }: Props) {
     return parseFloat(value) > 0 ? `${value} ETH` : '';
   };
 
+  const fetchContractName = async (address: string) => {
+    if (contractNames[address]?.isLoading || contractNames[address]?.name) {
+      return;
+    }
+
+    setContractNames(prev => ({
+      ...prev,
+      [address]: { name: address, isLoading: true }
+    }));
+
+    try {
+      const response = await fetch(`/api/contract-name?address=${address}`);
+      if (!response.ok) throw new Error('Failed to fetch');
+      
+      const data = await response.json();
+      setContractNames(prev => ({
+        ...prev,
+        [address]: { 
+          name: data.contractName || address, 
+          isLoading: false 
+        }
+      }));
+    } catch (error) {
+      console.error('Error fetching contract name:', error);
+      setContractNames(prev => ({
+        ...prev,
+        [address]: { 
+          name: address, 
+          isLoading: false, 
+          error: 'Failed to fetch contract name' 
+        }
+      }));
+    }
+  };
+
+  const renderContractName = (address: string | undefined) => {
+    if (!address) return 'Contract';
+    
+    const contractInfo = contractNames[address];
+    if (!contractInfo) return address;
+
+    return (
+      <span className="flex items-center gap-2">
+        {contractInfo.isLoading ? (
+          <>
+            <span className="animate-pulse">Loading...</span>
+            <span className="text-xs text-gray-400">{address}</span>
+          </>
+        ) : (
+          <>
+            <span>{contractInfo.name}</span>
+            {contractInfo.name !== address && (
+              <span className="text-xs text-gray-400">({address.slice(0, 6)}...{address.slice(-4)})</span>
+            )}
+          </>
+        )}
+      </span>
+    );
+  };
+
+  useEffect(() => {
+    traces.forEach(trace => {
+      if (trace.contractAddress) {
+        fetchContractName(trace.contractAddress);
+      }
+    });
+  }, [traces]);
+
   const renderTrace = (trace: ExecutionTrace) => {
     if (!trace.decodedInput) {
       console.error('Decoded input is undefined for trace:', trace);
@@ -32,7 +102,6 @@ export default function ExecutionTrace({ traces }: Props) {
 
     const traceId = `${trace.depth}-${trace.methodId}-${trace.to}`;
     const isExpanded = expandedRows.has(traceId);
-    const hasDecodedInput = trace.decodedInput.params.length > 0;
     const paddingLeft = `${trace.depth * 1.5}rem`;
     const isTopLevel = trace.depth === 0;
 
@@ -45,64 +114,58 @@ export default function ExecutionTrace({ traces }: Props) {
         <div 
           className={`
             flex items-center gap-2 py-2 px-4 
-            ${hasDecodedInput ? 'cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800' : ''}
+            cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800
             ${trace.error ? 'bg-red-50 dark:bg-red-900/20' : ''}
             ${isTopLevel ? 'bg-gray-50 dark:bg-gray-800' : ''}
           `}
-          onClick={() => hasDecodedInput && toggleRow(traceId)}
+          onClick={() => toggleRow(traceId)}
         >
-          {hasDecodedInput && (
-            <span className="text-gray-500 dark:text-gray-400 w-4">
-              {isExpanded ? '▼' : '▶'}
-            </span>
-          )}
+          <span className="text-gray-500 dark:text-gray-400 w-4">
+            {isExpanded ? '▼' : '▶'}
+          </span>
           <div className="font-mono text-sm flex-1">
-            <span className={`text-blue-600 dark:text-blue-400 ${isTopLevel ? 'text-base' : ''}`}>
-              {trace.contractName}
+            <span className="text-blue-600 dark:text-blue-400">
+              {renderContractName(trace.contractAddress)}
             </span>
             <span className="text-gray-500 dark:text-gray-400">
-              .{trace.methodId}(
+              .{trace.methodId}()
             </span>
-            {trace.decodedInput?.params.map((param, i) => (
-              <span key={i} className="text-gray-700 dark:text-gray-300">
-                {i > 0 && ', '}
-                {param.name}={formatParam(param.value)}
-              </span>
-            ))}
-            <span className="text-gray-500 dark:text-gray-400">)</span>
-            {formatValue(trace.value) && (
-              <span className="text-green-600 dark:text-green-400 ml-2">
-                {formatValue(trace.value)}
-              </span>
-            )}
-            {trace.output && !trace.error && (
-              <span className="text-green-600 dark:text-green-400 ml-2">
-                → {formatOutput(trace.output)}
-              </span>
-            )}
-            {trace.error && (
-              <span className="text-red-500 dark:text-red-400 ml-2">
-                ⚠️ {trace.error}
-              </span>
-            )}
           </div>
+          {formatValue(trace.value) && (
+            <span className="text-green-600 dark:text-green-400 ml-2">
+              {formatValue(trace.value)}
+            </span>
+          )}
         </div>
 
-        {isExpanded && hasDecodedInput && (
-          <div className="ml-8 mt-2 mb-4 space-y-2 text-sm">
-            <div className="text-gray-500 dark:text-gray-400">
-              Method: {trace.methodName || trace.methodId}
+        {isExpanded && (
+          <div className="ml-8 mt-2 mb-4 text-sm font-mono">
+            <div className="flex items-center gap-2">
+                {/* TODO: CallType component for Call, DelegateCall, StaticCall and Event */}
+              <span className="text-green-500 px-2 border border-green-500 rounded">
+                {trace.type || 'CALL'}
+              </span>
+              <span className="text-gray-500 dark:text-gray-400">
+                {trace.contractAddress}.{trace.decodedInput.methodName}(
+                {trace.decodedInput?.params.map((param, i) => (
+                  <span key={i} className="text-gray-700 dark:text-gray-300">
+                    {i > 0 && ', '}
+                    {param.name}: {param.type} = {formatParam(param.value)}
+                  </span>
+                ))}
+                )
+                {trace.output && !trace.error && (
+                    <span className="text-green-600 dark:text-green-400 px-2">
+                    → {formatOutput(trace.output)}
+                    </span>
+                )}
+              </span>
+              {trace.error && (
+                <span className="text-red-600 dark:text-red-400">
+                  ⚠️ {trace.error}
+                </span>
+              )}
             </div>
-            {trace.decodedInput.params.map((param, index) => (
-              <div key={index} className="grid grid-cols-[120px,1fr] gap-4">
-                <span className="font-medium text-gray-600 dark:text-gray-400">
-                  {param.name}:
-                </span>
-                <span className="font-mono break-all">
-                  {formatParam(param.value)}
-                </span>
-              </div>
-            ))}
           </div>
         )}
       </div>
