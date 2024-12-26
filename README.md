@@ -1,3 +1,5 @@
+Please come back EOD Friday December 27th for an updated README
+
 ## Preview
 
 <img width="1169" alt="Screenshot 2024-12-26 at 3 27 18 PM" src="https://github.com/user-attachments/assets/849e805c-3947-4fd8-a669-b5256837e44d" />
