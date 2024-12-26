@@ -1,5 +1,12 @@
 import { ethers } from 'ethers';
 import { Transaction, ExecutionTrace, DecodedParam } from '@/types/transaction';
+import { 
+  KnownSignature,
+  ConvertedTrace,
+  EtherscanTrace,
+  TraceCall,
+  DecodedResult
+} from './types';
 
 // Environment variable validation
 const RPC_URL = process.env.NEXT_PUBLIC_RPC_URL;
@@ -28,7 +35,7 @@ provider.getNetwork().catch(error => {
 });
 
 // Common function signatures for ERC20, ERC721, ERC1155, and other popular standards
-const KNOWN_SIGNATURES: Record<string, { name: string, types: string[], params?: string[] }> = {
+const KNOWN_SIGNATURES: Record<string, KnownSignature> = {
   '0xa9059cbb': { 
     name: 'transfer', 
     types: ['address', 'uint256'],
@@ -63,7 +70,7 @@ const KNOWN_SIGNATURES: Record<string, { name: string, types: string[], params?:
   // Add more as needed
 };
 
-function decodeParameters(types: string[], data: string): any[] {
+function decodeParameters(types: string[], data: string): DecodedResult[] {
   const abiCoder = new ethers.AbiCoder();
   try {
     return abiCoder.decode(types, '0x' + data);
@@ -167,12 +174,12 @@ export async function fetchAndDecodeTransaction(hash: string): Promise<Transacti
   }
 }
 
-function processTraceData(trace: any): ExecutionTrace[] {
+function processTraceData(trace: TraceCall): ExecutionTrace[] {
   if (!trace || typeof trace !== 'object') {
     throw new Error('Invalid trace data format');
   }
 
-  const processCall = (call: any, depth: number = 0): ExecutionTrace => {
+  const processCall = (call: TraceCall, depth: number = 0): ExecutionTrace => {
     try {
       if (!call.input) {
         throw new Error('Missing input in trace call');
@@ -202,9 +209,9 @@ function processTraceData(trace: any): ExecutionTrace[] {
     }
   };
 
-  const flattenCalls = (call: any, depth: number = 0): ExecutionTrace[] => {
+  const flattenCalls = (call: TraceCall, depth: number = 0): ExecutionTrace[] => {
     const current = processCall(call, depth);
-    const childCalls = call.calls?.flatMap((c: any) => flattenCalls(c, depth + 1)) || [];
+    const childCalls = call.calls?.flatMap((c) => flattenCalls(c, depth + 1)) || [];
     return [current, ...childCalls];
   };
 
@@ -225,37 +232,34 @@ function decodeCallParams(types: string[], paramNames: string[], data: string): 
   }
 }
 
-async function getTraceFromEtherscan(hash: string) {
-  if (!ETHERSCAN_API_KEY) {
-    throw new Error('No Etherscan API key provided');
+async function getTraceFromEtherscan(hash: string): Promise<EtherscanTrace[]> {
+  try {
+    const response = await fetch(`/api/tx-trace?hash=${hash}`);
+    const data = await response.json();
+    
+    console.log('Etherscan API response:', data);
+    
+    if (data.status === '1' && Array.isArray(data.result)) {
+      return data.result;
+    }
+    
+    return [];
+  } catch (error) {
+    console.error('Failed to fetch trace data:', error);
+    return [];
   }
-
-  // Try txlistinternal first
-  const response = await fetch(
-    `https://api.etherscan.io/api?module=account&action=txlistinternal&txhash=${hash}&apikey=${ETHERSCAN_API_KEY}`
-  );
-  
-  const data = await response.json();
-  console.log('Etherscan API response:', data);
-  
-  if (data.status === '1' && data.result) {
-    return convertEtherscanTrace(data.result);
-  }
-  
-  throw new Error(`Etherscan API error: ${data.message || 'Unknown error'}`);
 }
 
-function convertEtherscanTrace(etherscanTrace: any[]): any {
+function convertEtherscanTrace(etherscanTrace: EtherscanTrace[]): ConvertedTrace | null {
   if (!Array.isArray(etherscanTrace) || etherscanTrace.length === 0) {
     return null;
   }
 
-  // Convert internal transactions format
   return {
     from: etherscanTrace[0].from,
     to: etherscanTrace[0].to,
     value: etherscanTrace[0].value,
-    input: '0x', // Internal txs don't have input data
+    input: '0x',
     calls: etherscanTrace.slice(1).map(trace => ({
       from: trace.from,
       to: trace.to,

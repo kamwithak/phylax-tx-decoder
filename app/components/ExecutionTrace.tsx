@@ -1,16 +1,20 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import type { ExecutionTrace } from '@/types/transaction';
-import { ContractNames } from '../types/contract';
+import { useContractNames } from '../hooks/useContractNames';
 
-interface Props {
-  traces: ExecutionTrace[];
-}
-
-export default function ExecutionTrace({ traces }: Props) {
+export default function ExecutionTrace({ traces }: { traces: ExecutionTrace[] }) {
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
-  const [contractNames, setContractNames] = useState<ContractNames>({});
+  
+  // Get unique addresses from traces
+  const addresses = Array.from(new Set(
+    traces
+      .filter(trace => trace.contractAddress)
+      .map(trace => trace.contractAddress as string)
+  ));
+  
+  const contractNames = useContractNames(addresses);
 
   const toggleRow = (traceId: string) => {
     const newExpanded = new Set(expandedRows);
@@ -24,41 +28,6 @@ export default function ExecutionTrace({ traces }: Props) {
 
   const formatValue = (value: string) => {
     return parseFloat(value) > 0 ? `${value} ETH` : '';
-  };
-
-  const fetchContractName = async (address: string) => {
-    if (contractNames[address]?.isLoading || contractNames[address]?.name) {
-      return;
-    }
-
-    setContractNames(prev => ({
-      ...prev,
-      [address]: { name: address, isLoading: true }
-    }));
-
-    try {
-      const response = await fetch(`/api/contract-name?address=${address}`);
-      if (!response.ok) throw new Error('Failed to fetch');
-      
-      const data = await response.json();
-      setContractNames(prev => ({
-        ...prev,
-        [address]: { 
-          name: data.contractName || address, 
-          isLoading: false 
-        }
-      }));
-    } catch (error) {
-      console.error('Error fetching contract name:', error);
-      setContractNames(prev => ({
-        ...prev,
-        [address]: { 
-          name: address, 
-          isLoading: false, 
-          error: 'Failed to fetch contract name' 
-        }
-      }));
-    }
   };
 
   const renderContractName = (address: string | undefined) => {
@@ -85,14 +54,6 @@ export default function ExecutionTrace({ traces }: Props) {
       </span>
     );
   };
-
-  useEffect(() => {
-    traces.forEach(trace => {
-      if (trace.contractAddress) {
-        fetchContractName(trace.contractAddress);
-      }
-    });
-  }, [traces]);
 
   const renderTrace = (trace: ExecutionTrace) => {
     if (!trace.decodedInput) {
@@ -172,7 +133,7 @@ export default function ExecutionTrace({ traces }: Props) {
     );
   };
 
-  const formatParam = (value: any): string => {
+  const formatParam = (value: string | number | bigint | boolean): string => {
     if (typeof value === 'bigint') {
       return value.toString();
     }
