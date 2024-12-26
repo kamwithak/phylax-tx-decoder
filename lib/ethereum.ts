@@ -182,7 +182,7 @@ function processTraceData(trace: any): ExecutionTrace[] {
       const signature = KNOWN_SIGNATURES[selector];
 
       return {
-        contractName: call.to ? validateAddress(call.to) : 'Unknown Contract',
+        contractAddress: call.to ? validateAddress(call.to) : '0x',
         methodId: selector,
         methodName: signature?.name || `Unknown (${selector})`,
         depth,
