@@ -1,9 +1,31 @@
 import { ethers } from 'ethers';
 import { Transaction, ExecutionTrace, DecodedParam } from '@/types/transaction';
 
-// TODO: force environment file to be set and proper error handling if otherwise
-const RPC_URL = process.env.NEXT_PUBLIC_RPC_URL || 'https://eth.public-rpc.com';
-const provider = new ethers.JsonRpcProvider(RPC_URL);
+// Environment validation
+const RPC_URL = process.env.NEXT_PUBLIC_RPC_URL;
+const ETHERSCAN_API_KEY = process.env.NEXT_PUBLIC_ETHERSCAN_API_KEY;
+
+if (!RPC_URL) {
+  throw new Error('RPC_URL is required in environment variables');
+}
+
+if (!ETHERSCAN_API_KEY) {
+  throw new Error('ETHERSCAN_API_KEY is required in environment variables');
+}
+
+// Provider initialization with error handling
+let provider: ethers.JsonRpcProvider;
+try {
+  provider = new ethers.JsonRpcProvider(RPC_URL);
+} catch (error) {
+  throw new Error(`Failed to initialize provider: ${error instanceof Error ? error.message : 'Unknown error'}`);
+}
+
+// Validate provider connection
+provider.getNetwork().catch(error => {
+  console.error('Failed to connect to provider:', error);
+  throw new Error('Failed to connect to Ethereum network');
+});
 
 // Common function signatures for ERC20, ERC721, ERC1155, and other popular standards
 const KNOWN_SIGNATURES: Record<string, { name: string, types: string[], params?: string[] }> = {
@@ -33,6 +55,11 @@ const KNOWN_SIGNATURES: Record<string, { name: string, types: string[], params?:
   '0x79cc6790': { name: 'burnFrom', types: ['address', 'uint256'] },
   '0x3644e515': { name: 'DOMAIN_SEPARATOR', types: [] },
   '0x7ecebe00': { name: 'nonces', types: ['address'] },
+  '0xf2fde38b': {
+    name: 'transferOwnership',
+    types: ['address'],
+    params: ['newOwner']
+  },
   // Add more as needed
 };
 
@@ -47,87 +74,132 @@ function decodeParameters(types: string[], data: string): any[] {
 }
 
 export async function fetchAndDecodeTransaction(hash: string): Promise<Transaction> {
-  const tx = await provider.getTransaction(hash);
-  if (!tx) throw new Error('Transaction not found');
+  if (!hash.match(/^0x[a-fA-F0-9]{64}$/)) {
+    throw new Error('Invalid transaction hash format');
+  }
 
-  // Basic transaction data
-  const transaction: Transaction = {
-    hash: tx.hash,
-    from: tx.from,
-    to: tx.to || '',
-    value: ethers.formatEther(tx.value),
-    input: tx.data,
-  };
-
-  // Fetch trace data
   try {
-    const trace = await provider.send('debug_traceTransaction', [hash, {
-      tracer: 'callTracer',
-      tracerConfig: {
-        onlyTopCall: false,
-        withLog: true,
-      },
-    }]);
+    const tx = await provider.getTransaction(hash);
+    if (!tx) throw new Error('Transaction not found');
 
-    // Process trace into our format
-    transaction.trace = processTraceData(trace);
-  } catch (error) {
-    console.error('Failed to fetch trace data:', error);
-  }
+    // Basic transaction data
+    const transaction: Transaction = {
+      hash: tx.hash,
+      from: tx.from,
+      to: tx.to || '',
+      value: ethers.formatEther(tx.value),
+      input: tx.data,
+    };
 
-  // Try to decode the input data if it exists
-  if (tx.data && tx.data !== '0x') {
+    // Try RPC trace first, then fallback to Etherscan
+    let traceData = null;
+    
+    // Try RPC provider first
     try {
-      const selector = tx.data.slice(0, 10).toLowerCase();
-      const params = tx.data.slice(10);
-      
-      const signature = KNOWN_SIGNATURES[selector];
-      if (signature) {
-        const decodedParams = decodeParameters(signature.types, params);
-        
-        transaction.decodedInput = {
-          methodName: signature.name,
-          params: signature.types.map((type, index) => ({
-            name: `param${index + 1}`,
-            type,
-            value: decodedParams[index]
-          }))
-        };
-      } else {
-        transaction.decodedInput = {
-          methodName: `Unknown (${selector})`,
-          params: []
-        };
-      }
+      console.log('Fetching trace data from RPC for:', hash);
+      traceData = await provider.send('debug_traceTransaction', [hash, {
+        tracer: 'callTracer',
+        tracerConfig: {
+          onlyTopCall: false,
+          withLog: true,
+        },
+      }]);
+      console.log('RPC trace data type:', typeof traceData);
+      console.log('RPC trace data:', JSON.stringify(traceData, null, 2));
     } catch (error) {
-      console.error('Failed to decode input data:', error);
+      console.warn('RPC trace failed, trying Etherscan:', error);
     }
-  }
 
-  return transaction;
+    // Fallback to Etherscan if RPC failed or returned no data
+    if (!traceData && ETHERSCAN_API_KEY) {
+      try {
+        console.log('Fetching trace data from Etherscan');
+        const rawEtherscanData = await getTraceFromEtherscan(hash);
+        console.log('Raw Etherscan data:', JSON.stringify(rawEtherscanData, null, 2));
+        traceData = convertEtherscanTrace(rawEtherscanData);
+        console.log('Converted Etherscan trace:', JSON.stringify(traceData, null, 2));
+      } catch (error) {
+        console.error('Etherscan trace failed:', error);
+      }
+    }
+
+    // Process trace data if we got it from either source
+    if (traceData) {
+      try {
+        const traces = processTraceData(traceData);
+        console.log('Processed traces:', traces);
+        if (traces.length > 0) {
+          transaction.trace = traces;
+        }
+      } catch (error) {
+        console.error('Failed to process trace data:', error);
+      }
+    } else {
+      console.warn('No trace data available from any source');
+    }
+
+    // Decode input data
+    if (tx.data && tx.data !== '0x') {
+      try {
+        const selector = tx.data.slice(0, 10).toLowerCase();
+        const params = tx.data.slice(10);
+        
+        const signature = KNOWN_SIGNATURES[selector];
+        if (signature) {
+          transaction.decodedInput = {
+            methodName: signature.name,
+            params: signature.params ? decodeCallParams(signature.types, signature.params, params) : []
+          };
+        } else {
+          transaction.decodedInput = {
+            methodName: `Unknown (${selector})`,
+            params: []
+          };
+        }
+      } catch (error) {
+        console.error('Failed to decode input data:', error);
+      }
+    }
+
+    return transaction;
+  } catch (error) {
+    throw new Error(`Failed to fetch transaction: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
 }
 
 function processTraceData(trace: any): ExecutionTrace[] {
-  const processCall = (call: any, depth: number = 0): ExecutionTrace => {
-    const selector = call.input.slice(0, 10).toLowerCase();
-    const signature = KNOWN_SIGNATURES[selector];
+  if (!trace || typeof trace !== 'object') {
+    throw new Error('Invalid trace data format');
+  }
 
-    return {
-      contractName: call.to || 'Unknown Contract',
-      methodId: selector,
-      methodName: signature?.name || `Unknown (${selector})`,
-      depth,
-      from: call.from,
-      to: call.to,
-      value: ethers.formatEther(call.value || '0'),
-      input: call.input,
-      output: call.output,
-      error: call.error,
-      decodedInput: signature ? {
-        methodName: signature.name,
-        params: signature.params ? decodeCallParams(signature.types, signature.params, call.input.slice(10)) : []
-      } : undefined
-    };
+  const processCall = (call: any, depth: number = 0): ExecutionTrace => {
+    try {
+      if (!call.input) {
+        throw new Error('Missing input in trace call');
+      }
+
+      const selector = safeHexDecode(call.input, 0, 10).toLowerCase();
+      const signature = KNOWN_SIGNATURES[selector];
+
+      return {
+        contractName: call.to ? validateAddress(call.to) : 'Unknown Contract',
+        methodId: selector,
+        methodName: signature?.name || `Unknown (${selector})`,
+        depth,
+        from: validateAddress(call.from),
+        to: call.to ? validateAddress(call.to) : '',
+        value: ethers.formatEther(call.value || '0'),
+        input: call.input,
+        output: call.output,
+        error: call.error,
+        decodedInput: signature ? {
+          methodName: signature.name,
+          params: signature.params ? decodeCallParams(signature.types, signature.params, call.input.slice(10)) : []
+        } : undefined
+      };
+    } catch (error) {
+      throw new Error(`Failed to process call: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
   };
 
   const flattenCalls = (call: any, depth: number = 0): ExecutionTrace[] => {
@@ -150,5 +222,68 @@ function decodeCallParams(types: string[], paramNames: string[], data: string): 
   } catch (error) {
     console.error('Failed to decode parameters:', error);
     return [];
+  }
+}
+
+async function getTraceFromEtherscan(hash: string) {
+  if (!ETHERSCAN_API_KEY) {
+    throw new Error('No Etherscan API key provided');
+  }
+
+  // Try txlistinternal first
+  const response = await fetch(
+    `https://api.etherscan.io/api?module=account&action=txlistinternal&txhash=${hash}&apikey=${ETHERSCAN_API_KEY}`
+  );
+  
+  const data = await response.json();
+  console.log('Etherscan API response:', data);
+  
+  if (data.status === '1' && data.result) {
+    return convertEtherscanTrace(data.result);
+  }
+  
+  throw new Error(`Etherscan API error: ${data.message || 'Unknown error'}`);
+}
+
+function convertEtherscanTrace(etherscanTrace: any[]): any {
+  if (!Array.isArray(etherscanTrace) || etherscanTrace.length === 0) {
+    return null;
+  }
+
+  // Convert internal transactions format
+  return {
+    from: etherscanTrace[0].from,
+    to: etherscanTrace[0].to,
+    value: etherscanTrace[0].value,
+    input: '0x', // Internal txs don't have input data
+    calls: etherscanTrace.slice(1).map(trace => ({
+      from: trace.from,
+      to: trace.to,
+      value: trace.value,
+      input: '0x',
+      type: trace.type,
+      traceId: trace.traceId
+    }))
+  };
+}
+
+// Helper function to safely decode hex values
+function safeHexDecode(hex: string, start: number, length: number): string {
+  try {
+    if (!hex.startsWith('0x')) {
+      throw new Error('Input must start with 0x');
+    }
+    return hex.slice(start, start + length);
+  } catch (error) {
+    throw new Error(`Failed to decode hex: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
+}
+
+// Helper function to validate and normalize addresses
+function validateAddress(address: string): string {
+  try {
+    return ethers.getAddress(address);
+  } catch (error) {
+    throw new Error(`Invalid Ethereum address: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 } 

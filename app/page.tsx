@@ -5,7 +5,7 @@ import { Transaction } from '@/types/transaction';
 import TransactionInput from './components/TransactionInput';
 import TransactionData from './components/TransactionData';
 
-export default function Home() {
+export default function PhylaxTxDecoder() {
   const [transaction, setTransaction] = useState<Transaction | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -28,20 +28,22 @@ export default function Home() {
           </div>
         </div>
 
-        {error && (
-          <div className="rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20 p-4 text-red-700 dark:text-red-400">
-            {error}
-          </div>
-        )}
-
-        {loading && (
+        {loading ? (
           <div className="rounded-lg border bg-white dark:bg-gray-900 p-8 text-center text-gray-600 dark:text-gray-400">
             Loading transaction data...
           </div>
-        )}
+        ) : (
+          <>
+            {error && (
+              <div className="rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20 p-4 text-red-700 dark:text-red-400">
+                {error}
+              </div>
+            )}
 
-        {transaction && (
-          <TransactionData transaction={transaction} />
+            {transaction && (
+              <TransactionData transaction={transaction} />
+            )}
+          </>
         )}
       </main>
     </div>

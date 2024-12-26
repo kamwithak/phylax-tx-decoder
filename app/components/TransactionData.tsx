@@ -1,26 +1,13 @@
 'use client';
 
 import { Transaction } from '@/types/transaction';
-import { useState } from 'react';
-import ExecutionTraceViewer from './ExecutionTrace';
+import ExecutionTrace from './ExecutionTrace';
 
 interface Props {
   transaction: Transaction;
 }
 
 export default function TransactionData({ transaction }: Props) {
-  const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
-
-  const toggleRow = (id: string) => {
-    const newExpanded = new Set(expandedRows);
-    if (newExpanded.has(id)) {
-      newExpanded.delete(id);
-    } else {
-      newExpanded.add(id);
-    }
-    setExpandedRows(newExpanded);
-  };
-
   const formatCalldata = (input: string) => {
     if (!input || input === '0x') return null;
     const selector = input.slice(0, 10);
@@ -35,6 +22,11 @@ export default function TransactionData({ transaction }: Props) {
 
   return (
     <div className="space-y-8">
+      {/* Execution Trace */}
+      {transaction.trace && transaction.trace.length > 0 && (
+        <ExecutionTrace traces={transaction.trace} />
+      )}
+
       {/* Transaction Overview */}
       <div className="rounded-lg border bg-white dark:bg-gray-900 overflow-hidden">
         <div className="border-b dark:border-gray-800 p-4">
@@ -124,11 +116,6 @@ export default function TransactionData({ transaction }: Props) {
             )}
           </div>
         </div>
-      )}
-
-      {/* Execution Trace */}
-      {transaction.trace && transaction.trace.length > 0 && (
-        <ExecutionTraceViewer traces={transaction.trace} />
       )}
     </div>
   );
