@@ -11,26 +11,31 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
 
   return (
-    <div className="min-h-screen p-8">
+    <div className="min-h-screen bg-background p-8">
       <main className="max-w-6xl mx-auto space-y-8">
-        <h1 className="text-3xl font-bold text-center mb-8">
-          Ethereum Transaction Decoder
-        </h1>
-        
-        <TransactionInput
-          onSubmit={setTransaction}
-          setLoading={setLoading}
-          setError={setError}
-        />
+        <div className="rounded-lg border bg-white dark:bg-gray-900 overflow-hidden">
+          <div className="border-b dark:border-gray-800 p-6 text-center">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+              Ethereum Transaction Decoder
+            </h1>
+          </div>
+          <div className="p-6">
+            <TransactionInput
+              onSubmit={setTransaction}
+              setLoading={setLoading}
+              setError={setError}
+            />
+          </div>
+        </div>
 
         {error && (
-          <div className="p-4 bg-red-50 text-red-700 rounded-md">
+          <div className="rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20 p-4 text-red-700 dark:text-red-400">
             {error}
           </div>
         )}
 
         {loading && (
-          <div className="text-center">
+          <div className="rounded-lg border bg-white dark:bg-gray-900 p-8 text-center text-gray-600 dark:text-gray-400">
             Loading transaction data...
           </div>
         )}

@@ -36,14 +36,19 @@ export default function TransactionInput({ onSubmit, setLoading, setError }: Pro
           value={hash}
           onChange={(e) => setHash(e.target.value)}
           placeholder="Enter transaction hash"
-          className="flex-1 p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+          className="flex-1 p-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 
+            rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none
+            text-gray-700 dark:text-gray-300 placeholder-gray-500 dark:placeholder-gray-400
+            transition-colors"
           pattern="^0x[a-fA-F0-9]{64}$"
           title="Please enter a valid transaction hash (0x followed by 64 hexadecimal characters)"
           required
         />
         <button
           type="submit"
-          className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors"
+          className="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg
+            transition-colors focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+            dark:focus:ring-offset-gray-900"
         >
           Decode
         </button>
