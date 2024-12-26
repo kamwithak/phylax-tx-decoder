@@ -2,7 +2,7 @@
 
 # Ethereum Transaction Decoder
 
-A crypto app for decoding and visualizing Ethereum txs/traces via a nested table visualization.
+A crypto app for decoding/visualizing ETH traces via a nested table visualization. 
 
 Inspired by [Etherscan decoder tool](https://etherscan.io/tx-decoder?tx=0x3346fb99ba272d13dff23d17a045d491d5d55dd46b01cb5ee1ac7e4df7695746).
 
@@ -13,10 +13,10 @@ Inspired by [Etherscan decoder tool](https://etherscan.io/tx-decoder?tx=0x3346fb
 ## Features
 
 - Decode transaction input data and method calls
-- Visualize nested contract interactions
+- Visualize nested contract interactions via a nested table
 - Show contract names and addresses
-- Display ETH value transfers, though commonly used for ERC20 tokens and not native ETH
-- Support for common ERC standards (ERC20, ERC721, etc.) - requires support for vault contract standards, etc...
+- Display native ETH value transfers
+- Support for common ERC standards (ERC20, ERC721, etc.) - requires further support for vault contract standards, etc...
 - Fallback trace mechanism for broader node compatibility
 
 ## How It Works
