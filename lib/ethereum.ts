@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import { Transaction, ExecutionTrace, DecodedParam } from '@/types/transaction';
 
-// Environment validation
+// Environment variable validation
 const RPC_URL = process.env.NEXT_PUBLIC_RPC_URL;
 const ETHERSCAN_API_KEY = process.env.NEXT_PUBLIC_ETHERSCAN_API_KEY;
 
