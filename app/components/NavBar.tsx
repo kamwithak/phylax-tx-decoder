@@ -4,7 +4,7 @@ import ConnectButton from './ConnectButton';
 
 export default function NavBar() {
   return (
-    <nav className="border-b dark:border-gray-800 bg-white dark:bg-gray-900">
+    <nav className="border-b border-solid border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           {/* Left side - Logo */}
@@ -15,7 +15,7 @@ export default function NavBar() {
               rel="noopener noreferrer"
               className="text-xl font-bold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300"
             >
-              Phylax Systems
+              Phylax Systems Inc.
             </a>
           </div>
 

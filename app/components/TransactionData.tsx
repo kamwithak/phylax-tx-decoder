@@ -28,7 +28,7 @@ export default function TransactionData({ transaction }: Props) {
       )}
 
       {/* Transaction Overview */}
-      <div className="rounded-lg border bg-white dark:bg-gray-900 overflow-hidden">
+      <div className="rounded-lg border border-solid border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 overflow-hidden">
         <div className="border-b dark:border-gray-800 p-4">
           <h2 className="text-lg font-semibold">Transaction Overview</h2>
         </div>
@@ -72,7 +72,7 @@ export default function TransactionData({ transaction }: Props) {
 
       {/* Calldata Section */}
       {calldata && (
-        <div className="rounded-lg border bg-white dark:bg-gray-900 overflow-hidden">
+        <div className="rounded-lg border border-solid border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 overflow-hidden">
           <div className="border-b dark:border-gray-800 p-4">
             <h2 className="text-lg font-semibold">Transaction Data</h2>
           </div>

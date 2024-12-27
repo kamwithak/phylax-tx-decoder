@@ -77,7 +77,6 @@ export default function ExecutionTrace({ traces }: { traces: ExecutionTrace[] })
             flex items-center gap-2 py-2 px-4 
             cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800
             ${trace.error ? 'bg-red-50 dark:bg-red-900/20' : ''}
-            ${isTopLevel ? 'bg-gray-50 dark:bg-gray-800' : ''}
           `}
           onClick={() => toggleRow(traceId)}
         >
@@ -148,7 +147,7 @@ export default function ExecutionTrace({ traces }: { traces: ExecutionTrace[] })
   };
 
   return (
-    <div className="rounded-lg border bg-white dark:bg-gray-900 overflow-hidden">
+    <div className="rounded-lg border border-solid border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 overflow-hidden">
       <div className="border-b dark:border-gray-800 p-4">
         <h2 className="text-lg font-semibold">Execution Trace</h2>
       </div>
