@@ -16,8 +16,8 @@ A crypto app for decoding/visualizing ETH traces via a nested table visualizatio
 - Display native ETH value transfers
 - Support for common ERC standards (ERC20, ERC721, etc.) - requires further support for vault contract standards, etc...
 - Fallback trace mechanism for broader node compatibility
-- TODO: integrate wagmi and wallet connecting via the NavBar
-- TODO: footer component
+~- TODO: integrate wagmi and wallet connecting via the NavBar~
+~- TODO: footer component~
 - TODO: documentation, analysis on trade-offs and improvements/optimizations - short-cuts taken in the name of expediency
 
 ## How It Works
@@ -117,7 +117,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 |----------|-------------|----------|
 | NEXT_PUBLIC_RPC_URL | Ethereum RPC endpoint URL | Yes |
 | NEXT_PUBLIC_ETHERSCAN_API_KEY | Etherscan API key | Yes |
-| NEXT_PUBLIC_WC_PROJECT_ID | WalletConnect Project ID | YES |
+| NEXT_PUBLIC_WC_PROJECT_ID | WalletConnect Project ID | Yes |
 
 ## Usage
 
