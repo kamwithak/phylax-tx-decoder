@@ -17,7 +17,7 @@ A crypto app for decoding/visualizing ETH traces via a nested table visualizatio
 - Support for common ERC standards (`ERC20`, `ERC721`, etc.) - requires further support for vault contract standards, etc...
 - Fallback trace mechanism for broader node compatibility
 - Wagmi integration and wallet connecting via the NavBar - `ConnectButton`
-- Layout, NavBar, Main Page, and Footer components
+- Layout, nagivation bar, main page, and footer components
 - Testing coverage for core functionality -> mock tests using `jest` and `testing-library`
 - In progress: documentation, analysis on trade-offs and improvements/optimizations - short-cuts taken in the name of expediency
 
