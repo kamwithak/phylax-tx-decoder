@@ -137,6 +137,58 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 3. View the execution trace with expandable contract interactions
 4. Click on rows to see detailed method parameters and return values
 
+## Testing
+
+The project uses Jest for testing with TypeScript support. Tests are located in `lib/__tests__/` directory. I was able to write tests for core features like decoding transactions, processing traces, and handling errors. Granted additional time, I would have liked to write more tests for the UI components, but I ran out of time.
+
+### Running Tests
+
+_Reminder to set your environment variables in the `.env` file._ If you want to use a different set of mock endpoints for testing, you can updated the environment variables in the `.env` file directly.
+
+```bash
+# Run all tests
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run tests with coverage
+npm test -- --coverage
+```
+
+### Test Structure
+
+- Unit tests for Ethereum transaction processing
+- Mock implementations for ethers.js providers
+- Type-safe test cases for trace data handling
+- Error case coverage for invalid inputs
+
+### Example Test Case
+
+```typescript
+it('should fetch and decode a basic transaction', async () => {
+  mockProvider.getTransaction.mockResolvedValue(mockTx);
+  mockProvider.send.mockResolvedValue(null);
+
+  const result = await fetchAndDecodeTransaction(mockTx.hash!);
+
+  expect(result).toMatchObject({
+    hash: mockTx.hash,
+    from: mockTx.from,
+    to: mockTx.to,
+    value: mockTx.value?.toString()
+  });
+});
+```
+
+### Test Coverage
+
+- Transaction fetching and decoding
+- Trace data processing
+- Error handling
+- Network interactions
+- Contract name resolution
+
 ## Contributing
 
 1. Fork the repository
