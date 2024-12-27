@@ -1,5 +1,3 @@
-**Please come back EOD Friday December 27th for a finalized tech doc**
-
 # Ethereum Transaction Decoder
 
 A crypto app for decoding/visualizing ETH traces via a nested table visualization.
