@@ -18,6 +18,9 @@ Inspired by [Etherscan decoder tool](https://etherscan.io/tx-decoder?tx=0x3346fb
 - Display native ETH value transfers
 - Support for common ERC standards (ERC20, ERC721, etc.) - requires further support for vault contract standards, etc...
 - Fallback trace mechanism for broader node compatibility
+- TODO: integrate wagmi and wallet connecting via the NavBar
+- TODO: footer component
+- TODO: documentation, analysis on trade-offs and improvements/optimizations - short-cuts taken in the name of expediency
 
 ## How It Works
 
