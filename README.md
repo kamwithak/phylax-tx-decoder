@@ -12,7 +12,8 @@ A crypto app for decoding/visualizing ETH traces via a nested table visualizatio
 
 - Decode transaction input data and method calls
 - Visualize nested contract interactions (shows contract names and addresses) via a nested table ie) _Execution Trace_
-- Display native `ETH` value transfers including `from` and `to` addresses ie) _TransactionOverview_
+- Display native `ETH` value transfers including `from` and `to` addresses ie) _Transaction Overview_
+- Displays the decoded parameters for the queried tx address ie) _Transaction Data_
 - Support for common ERC standards (`ERC20`, `ERC721`, etc.) - requires further support for vault contract standards, etc...
 - Fallback trace mechanism for broader node compatibility
 - Wagmi integration and wallet connecting via the NavBar - `ConnectButton`
