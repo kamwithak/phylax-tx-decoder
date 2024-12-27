@@ -1,5 +1,7 @@
 'use client';
 
+import ConnectButton from './ConnectButton';
+
 export default function NavBar() {
   return (
     <nav className="border-b dark:border-gray-800 bg-white dark:bg-gray-900">
@@ -17,7 +19,7 @@ export default function NavBar() {
             </a>
           </div>
 
-          {/* Right side - External links */}
+          {/* Right side - External links and Connect button */}
           <div className="flex items-center space-x-6">
             <a
               href="https://github.com/kamwithak/phylax-tx-decoder"
@@ -43,6 +45,8 @@ export default function NavBar() {
             >
               Blog
             </a>
+            
+            <ConnectButton />
           </div>
         </div>
       </div>
