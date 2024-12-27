@@ -18,7 +18,7 @@ A crypto app for decoding/visualizing ETH traces via a nested table visualizatio
 - Fallback trace mechanism for broader node compatibility
 - Wagmi integration and wallet connecting via the NavBar - `ConnectButton`
 - Layout, NavBar, Main Page, and Footer components
-- Testing coverage for core functionality -> mock tests using `Jest` and `testing-library`
+- Testing coverage for core functionality -> mock tests using `jest` and `testing-library`
 - In progress: documentation, analysis on trade-offs and improvements/optimizations - short-cuts taken in the name of expediency
 
 ## How It Works
