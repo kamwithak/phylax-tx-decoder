@@ -102,22 +102,38 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 ```json
 {
   "dependencies": {
+    "@tanstack/react-query": "^5.62.11",
     "ethers": "^6.13.4",
     "next": "15.1.2",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "viem": "2.x",
+    "wagmi": "^2.14.6"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3",
     "@types/node": "^22.10.2",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@testing-library/jest-dom": "^6.1.4",
+    "@testing-library/react": "^14.0.0",
     "eslint": "^9",
+    "eslint-config-next": "15.1.2",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
+    "ts-jest": "^29.1.1",
     "typescript": "^5"
   }
 }
 ```
+
+Key dependencies:
+- `wagmi` and `viem` for Web3 interactions
+- `@tanstack/react-query` for data fetching
+- `jest` and `@testing-library` for testing
+- `tailwindcss` for styling
 
 ## Environment Variables
 
