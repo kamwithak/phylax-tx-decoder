@@ -5,10 +5,6 @@ import type { TraceCall } from '../types';
 import { Network } from 'ethers';
 import { TransactionResponse } from 'ethers';
 
-// Set environment variables for testing
-process.env.NEXT_PUBLIC_RPC_URL = 'https://mock-rpc.eth';
-process.env.NEXT_PUBLIC_ETHERSCAN_API_KEY = 'mock-api-key';
-
 interface MockProvider extends Partial<ethers.JsonRpcProvider> {
   getTransaction: jest.MockedFunction<() => Promise<TransactionResponse | null>>;
   send: jest.MockedFunction<() => Promise<unknown>>;
