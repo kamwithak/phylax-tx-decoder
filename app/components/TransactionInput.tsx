@@ -46,9 +46,11 @@ export default function TransactionInput({ onSubmit, setLoading, setError }: Pro
         />
         <button
           type="submit"
+          disabled={!hash.trim()}
           className="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg
             transition-colors focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
-            dark:focus:ring-offset-gray-900"
+            dark:focus:ring-offset-gray-900
+            disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-500"
         >
           Decode
         </button>
