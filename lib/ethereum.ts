@@ -8,16 +8,15 @@ import {
   DecodedResult,
 } from "./types";
 
-// Environment variable validation
 const RPC_URL = process.env.NEXT_PUBLIC_RPC_URL;
 const ETHERSCAN_API_KEY = process.env.NEXT_PUBLIC_ETHERSCAN_API_KEY;
 
 if (!RPC_URL) {
-  throw new Error("RPC_URL is required in environment variables");
+  throw new Error("RPC_URL is a required environment variable");
 }
 
 if (!ETHERSCAN_API_KEY) {
-  throw new Error("ETHERSCAN_API_KEY is required in environment variables");
+  throw new Error("ETHERSCAN_API_KEY is a required environment variable");
 }
 
 // Provider initialization with error handling
