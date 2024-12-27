@@ -87,7 +87,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ```
 ├── app/
-│   ├── api/                  # API routes for contract name resolution
+│   ├── api/                  # API routes
 │   ├── components/           # React components
 │   │   ├── AddressDisplay    # Wallet address formatting
 │   │   ├── ConnectButton     # Wallet connection UI
