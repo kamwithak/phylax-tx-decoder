@@ -16,8 +16,11 @@ A crypto app for decoding/visualizing ETH traces via a nested table visualizatio
 - Display native ETH value transfers
 - Support for common ERC standards (ERC20, ERC721, etc.) - requires further support for vault contract standards, etc...
 - Fallback trace mechanism for broader node compatibility
+  
 ~- TODO: integrate wagmi and wallet connecting via the NavBar~
+
 ~- TODO: footer component~
+
 - TODO: documentation, analysis on trade-offs and improvements/optimizations - short-cuts taken in the name of expediency
 
 ## How It Works
@@ -81,12 +84,12 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 ```
 ├── app/
 │   ├── api/                 # API routes
-│   ├── components/         # React components
-│   ├── hooks/             # Custom React hooks
-│   └── types/             # TypeScript type definitions
-├── lib/                   # Utility functions and services
-├── public/               # Static assets
-└── types/               # Global type definitions
+│   ├── components/          # React components
+│   ├── hooks/               # Custom React hooks
+│   └── types/               # TypeScript type definitions
+├── lib/                     # Utility functions and services
+├── public/                  # Static assets
+└── types/                   # Global type definitions
 ```
 
 ## Dependencies
