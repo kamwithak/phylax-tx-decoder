@@ -222,6 +222,22 @@ it('should fetch and decode a basic transaction', async () => {
 - Error handling
 - Network interactions
 - Contract name resolution
+- 
+
+## Functional tests via the UI
+
+Works:
+
+Transfer ownership call on ERC721: 0xd03bd194e881853df4d56c2a11291dd48fcce39cb0f1e1eaac0d3f0864534d33
+Approve call on ERC20: 0x318b46e4556528137abf377475d6f082b377997a25ac6c849b9b4b0da5f16aab
+Transfer call on ERC20: 0x3346fb99ba272d13dff23d17a045d491d5d55dd46b01cb5ee1ac7e4df7695746
+Transfer call on ERC20: https://etherscan.io/tx/0x5fbb01c81068a3cbd69a4fa696db3bafd0afc4dfb7313f2dfbd2ea3be73fb710
+
+Fails:
+Flash loan: 0x59405648254f43df953137df40000abcc4193e948fe2d8f7c971213a0d236102
+Withdraw on curve: 0xef2af67c7b1d2d08d11f25238eead77a77e5f93e742025d32ec6cf9357343fed
+
+I am pasting these ^ failed tx addresses to make obvious of the cases where the application breaks. To understand why, please read below. 
 
 ## Limitations and Improvements
 
