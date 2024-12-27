@@ -20,7 +20,7 @@ export default function NavBar() {
           {/* Right side - External links */}
           <div className="flex items-center space-x-6">
             <a
-              href="https://github.com/phylax-systems"
+              href="https://github.com/kamwithak/phylax-tx-decoder"
               target="_blank"
               rel="noopener noreferrer"
               className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
@@ -28,7 +28,7 @@ export default function NavBar() {
               GitHub
             </a>
             <a
-              href="https://twitter.com/phylax_systems"
+              href="https://x.com/phylaxsystems"
               target="_blank"
               rel="noopener noreferrer"
               className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
@@ -36,12 +36,12 @@ export default function NavBar() {
               Twitter
             </a>
             <a
-              href="https://docs.phylax.systems"
+              href="https://phylax.systems/blog/phylax-systems-raises-a-4-5mm-pre-seed-to-back-credible-security"
               target="_blank"
               rel="noopener noreferrer"
               className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
             >
-              Docs
+              Blog
             </a>
           </div>
         </div>
