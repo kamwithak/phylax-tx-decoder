@@ -11,7 +11,7 @@ A crypto app for decoding/visualizing ETH traces via a nested table visualizatio
 ## Features
 
 - Decode transaction input data and method calls
-- Visualize nested contract interactions via a nested table
+- Visualize nested contract interactions via a nested table ie) _Execution Trace_
 - Show contract names and addresses
 - Display native ETH value transfers
 - Support for common ERC standards (ERC20, ERC721, etc.) - requires further support for vault contract standards, etc...
