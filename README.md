@@ -204,9 +204,15 @@ it('should fetch and decode a basic transaction', async () => {
 
 ## Limitations
 
+Will update today.
+
 ## Trade-offs
 
+Will update today.
+
 ## Improvements
+
+Will update today.
 
 ## Contributing
 
