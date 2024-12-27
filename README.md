@@ -64,6 +64,7 @@ npm install
 ```env
 NEXT_PUBLIC_RPC_URL=your_ethereum_rpc_url
 NEXT_PUBLIC_ETHERSCAN_API_KEY=your_etherscan_api_key
+NEXT_PUBLIC_WC_PROJECT_ID=your_wallet_connect_project_id
 ```
 
 ## Development
@@ -116,10 +117,11 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 |----------|-------------|----------|
 | NEXT_PUBLIC_RPC_URL | Ethereum RPC endpoint URL | Yes |
 | NEXT_PUBLIC_ETHERSCAN_API_KEY | Etherscan API key | Yes |
+| NEXT_PUBLIC_WC_PROJECT_ID | WalletConnect Project ID | YES |
 
 ## Usage
 
-1. Enter an Ethereum transaction hash in the input field
+1. Enter a valid Ethereum transaction hash in the input field
 2. Click "Decode" to fetch and decode the transaction
 3. View the execution trace with expandable contract interactions
 4. Click on rows to see detailed method parameters and return values
