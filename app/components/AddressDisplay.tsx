@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 interface AddressDisplayProps {
   address: string;
@@ -10,4 +10,4 @@ export default function AddressDisplay({ address }: AddressDisplayProps) {
       {address.slice(0, 6)}...{address.slice(-4)}
     </span>
   );
-} 
+}

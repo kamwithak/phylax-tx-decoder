@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import ConnectButton from './ConnectButton';
+import ConnectButton from "./ConnectButton";
 
 export default function NavBar() {
   return (
@@ -9,9 +9,9 @@ export default function NavBar() {
         <div className="flex justify-between h-16 items-center">
           {/* Left side - Logo */}
           <div className="flex-shrink-0 flex items-center">
-            <a 
-              href="https://phylax.systems" 
-              target="_blank" 
+            <a
+              href="https://phylax.systems"
+              target="_blank"
               rel="noopener noreferrer"
               className="text-xl font-bold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300"
             >
@@ -45,7 +45,7 @@ export default function NavBar() {
             >
               Blog
             </a>
-            
+
             <ConnectButton />
           </div>
         </div>

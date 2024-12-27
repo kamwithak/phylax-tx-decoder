@@ -5,7 +5,7 @@ export default function Footer() {
         <div className="flex justify-end items-center">
           <div className="ml-auto">
             <span className="text-gray-600 dark:text-gray-400">
-              Developed by{' '}
+              Developed by{" "}
               <a
                 href="https://github.com/kamwithak"
                 target="_blank"
@@ -20,4 +20,4 @@ export default function Footer() {
       </div>
     </footer>
   );
-} 
+}

@@ -39,4 +39,4 @@ export interface ConvertedTrace {
     type?: string;
     traceId?: string;
   }[];
-} 
+}

@@ -1,20 +1,17 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import type { ExecutionTrace } from '@/types/transaction';
-import { useContractNames } from '../hooks/useContractNames';
+import { useState } from "react";
+import type { ExecutionTrace } from "@/types/transaction";
+import { useContractNames } from "../hooks/useContractNames";
+import { getAddressesFromTraces } from "../utils/getAddressesFromTraces";
 
-export default function ExecutionTrace({ traces }: { traces: ExecutionTrace[] }) {
+export default function ExecutionTrace({
+  traces,
+}: {
+  traces: ExecutionTrace[];
+}) {
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
-  
-  // Get unique addresses from traces
-  const addresses = Array.from(new Set(
-    traces
-      .filter(trace => trace.contractAddress)
-      .map(trace => trace.contractAddress as string)
-  ));
-  
-  const contractNames = useContractNames(addresses);
+  const contractNames = useContractNames(getAddressesFromTraces(traces));
 
   const toggleRow = (traceId: string) => {
     const newExpanded = new Set(expandedRows);
@@ -27,12 +24,12 @@ export default function ExecutionTrace({ traces }: { traces: ExecutionTrace[] })
   };
 
   const formatValue = (value: string) => {
-    return parseFloat(value) > 0 ? `${value} ETH` : '';
+    return parseFloat(value) > 0 ? `${value} ETH` : "";
   };
 
   const renderContractName = (address: string | undefined) => {
-    if (!address) return 'Contract';
-    
+    if (!address) return "Contract";
+
     const contractInfo = contractNames[address];
     if (!contractInfo) return address;
 
@@ -47,7 +44,9 @@ export default function ExecutionTrace({ traces }: { traces: ExecutionTrace[] })
           <>
             <span>{contractInfo.name}</span>
             {contractInfo.name !== address && (
-              <span className="text-xs text-gray-400">({address.slice(0, 6)}...{address.slice(-4)})</span>
+              <span className="text-xs text-gray-400">
+                ({address.slice(0, 6)}...{address.slice(-4)})
+              </span>
             )}
           </>
         )}
@@ -57,31 +56,30 @@ export default function ExecutionTrace({ traces }: { traces: ExecutionTrace[] })
 
   const renderTrace = (trace: ExecutionTrace) => {
     if (!trace.decodedInput) {
-      console.error('Decoded input is undefined for trace:', trace);
+      console.error("Decoded input is undefined for trace:", trace);
       return null;
     }
 
     const traceId = `${trace.depth}-${trace.methodId}-${trace.to}`;
     const isExpanded = expandedRows.has(traceId);
     const paddingLeft = `${trace.depth * 1.5}rem`;
-    const isTopLevel = trace.depth === 0;
 
     return (
-      <div 
-        key={traceId} 
+      <div
+        key={traceId}
         style={{ paddingLeft }}
-        className={`border-l-2 ${trace.depth > 0 ? 'border-gray-200 dark:border-gray-700' : 'border-transparent'}`}
+        className={`border-l-2 ${trace.depth > 0 ? "border-gray-200 dark:border-gray-700" : "border-transparent"}`}
       >
-        <div 
+        <div
           className={`
             flex items-center gap-2 py-2 px-4 
             cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800
-            ${trace.error ? 'bg-red-50 dark:bg-red-900/20' : ''}
+            ${trace.error ? "bg-red-50 dark:bg-red-900/20" : ""}
           `}
           onClick={() => toggleRow(traceId)}
         >
           <span className="text-gray-500 dark:text-gray-400 w-4">
-            {isExpanded ? '▼' : '▶'}
+            {isExpanded ? "▼" : "▶"}
           </span>
           <div className="font-mono text-sm flex-1">
             <span className="text-blue-600 dark:text-blue-400">
@@ -101,23 +99,23 @@ export default function ExecutionTrace({ traces }: { traces: ExecutionTrace[] })
         {isExpanded && (
           <div className="ml-8 mt-2 mb-4 text-sm font-mono">
             <div className="flex items-center gap-2">
-                {/* TODO: CallType component for Call, DelegateCall, StaticCall and Event */}
+              {/* TODO: CallType component for Call, DelegateCall, StaticCall and Event */}
               <span className="text-green-500 px-2 border border-green-500 rounded">
-                {trace.type || 'CALL'}
+                {trace.type || "CALL"}
               </span>
               <span className="text-gray-500 dark:text-gray-400">
                 {trace.contractAddress}.{trace.decodedInput.methodName}(
                 {trace.decodedInput?.params.map((param, i) => (
                   <span key={i} className="text-gray-700 dark:text-gray-300">
-                    {i > 0 && ', '}
+                    {i > 0 && ", "}
                     {param.name}: {param.type} = {formatParam(param.value)}
                   </span>
                 ))}
                 )
                 {trace.output && !trace.error && (
-                    <span className="text-green-600 dark:text-green-400 px-2">
+                  <span className="text-green-600 dark:text-green-400 px-2">
                     → {formatOutput(trace.output)}
-                    </span>
+                  </span>
                 )}
               </span>
               {trace.error && (
@@ -133,7 +131,7 @@ export default function ExecutionTrace({ traces }: { traces: ExecutionTrace[] })
   };
 
   const formatParam = (value: string | number | bigint | boolean): string => {
-    if (typeof value === 'bigint') {
+    if (typeof value === "bigint") {
       return value.toString();
     }
     return value.toString();
@@ -156,4 +154,4 @@ export default function ExecutionTrace({ traces }: { traces: ExecutionTrace[] })
       </div>
     </div>
   );
-} 
+}

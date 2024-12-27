@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { fetchAndDecodeTransaction } from '@/lib/ethereum';
-import { Transaction } from '@/types/transaction';
+import { useState } from "react";
+import { fetchAndDecodeTransaction } from "@/lib/ethereum";
+import { Transaction } from "@/types/transaction";
 
 interface Props {
   onSubmit: (transaction: Transaction) => void;
@@ -10,8 +10,12 @@ interface Props {
   setError: (error: string | null) => void;
 }
 
-export default function TransactionInput({ onSubmit, setLoading, setError }: Props) {
-  const [hash, setHash] = useState('');
+export default function TransactionInput({
+  onSubmit,
+  setLoading,
+  setError,
+}: Props) {
+  const [hash, setHash] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,7 +26,9 @@ export default function TransactionInput({ onSubmit, setLoading, setError }: Pro
       const transaction = await fetchAndDecodeTransaction(hash);
       onSubmit(transaction);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch transaction');
+      setError(
+        err instanceof Error ? err.message : "Failed to fetch transaction",
+      );
     } finally {
       setLoading(false);
     }
@@ -57,4 +63,4 @@ export default function TransactionInput({ onSubmit, setLoading, setError }: Pro
       </div>
     </form>
   );
-} 
+}

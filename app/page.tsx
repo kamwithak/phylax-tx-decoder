@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import TransactionInput from './components/TransactionInput';
-import TransactionData from './components/TransactionData';
-import { Transaction } from '@/types/transaction';
-import { useState } from 'react';
+import TransactionInput from "./components/TransactionInput";
+import TransactionData from "./components/TransactionData";
+import { Transaction } from "@/types/transaction";
+import { useState } from "react";
 
 export default function PhylaxTxDecoder() {
   const [transaction, setTransaction] = useState<Transaction | null>(null);
@@ -40,9 +40,7 @@ export default function PhylaxTxDecoder() {
               </div>
             )}
 
-            {transaction && (
-              <TransactionData transaction={transaction} />
-            )}
+            {transaction && <TransactionData transaction={transaction} />}
           </>
         )}
       </main>

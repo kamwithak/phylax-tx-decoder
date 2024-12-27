@@ -16,11 +16,12 @@ A crypto app for decoding/visualizing ETH traces via a nested table visualizatio
 - Display native ETH value transfers
 - Support for common ERC standards (ERC20, ERC721, etc.) - requires further support for vault contract standards, etc...
 - Fallback trace mechanism for broader node compatibility
-  
+
 ~- TODO: integrate wagmi and wallet connecting via the NavBar~
 
 ~- TODO: footer component~
 
+- TODO: testing coverage and mock tests via Jest and testing-library/react
 - TODO: documentation, analysis on trade-offs and improvements/optimizations - short-cuts taken in the name of expediency
 
 ## How It Works
@@ -35,9 +36,12 @@ The application attempts to fetch transaction trace data in two ways:
 // Simplified trace fetching logic
 try {
   // Try RPC provider first
-  traceData = await provider.send('debug_traceTransaction', [hash, {
-    tracer: 'callTracer'
-  }]);
+  traceData = await provider.send("debug_traceTransaction", [
+    hash,
+    {
+      tracer: "callTracer",
+    },
+  ]);
 } catch (error) {
   // Fallback to Etherscan if RPC failed
   const etherscanTrace = await getTraceFromEtherscan(hash);
@@ -53,17 +57,20 @@ try {
 ## Installation
 
 1. Clone the repository:
+
 ```bash
 git clone https://github.com/your-username/ethereum-tx-decoder.git
 cd ethereum-tx-decoder
 ```
 
 2. Install dependencies:
+
 ```bash
 npm install
 ```
 
 3. Create a `.env` file in the root directory:
+
 ```env
 NEXT_PUBLIC_RPC_URL=your_ethereum_rpc_url
 NEXT_PUBLIC_ETHERSCAN_API_KEY=your_etherscan_api_key
@@ -73,6 +80,7 @@ NEXT_PUBLIC_WC_PROJECT_ID=your_wallet_connect_project_id
 ## Development
 
 Run the development server:
+
 ```bash
 npm run dev
 ```
@@ -116,11 +124,11 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Environment Variables
 
-| Variable | Description | Required |
-|----------|-------------|----------|
-| NEXT_PUBLIC_RPC_URL | Ethereum RPC endpoint URL | Yes |
-| NEXT_PUBLIC_ETHERSCAN_API_KEY | Etherscan API key | Yes |
-| NEXT_PUBLIC_WC_PROJECT_ID | WalletConnect Project ID | Yes |
+| Variable                      | Description               | Required |
+| ----------------------------- | ------------------------- | -------- |
+| NEXT_PUBLIC_RPC_URL           | Ethereum RPC endpoint URL | Yes      |
+| NEXT_PUBLIC_ETHERSCAN_API_KEY | Etherscan API key         | Yes      |
+| NEXT_PUBLIC_WC_PROJECT_ID     | WalletConnect Project ID  | Yes      |
 
 ## Usage
 

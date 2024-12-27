@@ -38,5 +38,7 @@ body {
 
 /* Monospace improvements */
 .font-mono {
-  font-feature-settings: "tnum" on, "zero" on;
+  font-feature-settings:
+    "tnum" on,
+    "zero" on;
 }

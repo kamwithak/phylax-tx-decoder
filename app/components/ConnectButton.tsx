@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useAccount, useConnect, useDisconnect } from 'wagmi';
-import AddressDisplay from './AddressDisplay';
+import { useAccount, useConnect, useDisconnect } from "wagmi";
+import AddressDisplay from "./AddressDisplay";
 
 export default function ConnectButton() {
   const { address, isConnected } = useAccount();
@@ -30,4 +30,4 @@ export default function ConnectButton() {
       Connect Wallet
     </button>
   );
-} 
+}
