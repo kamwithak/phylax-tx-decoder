@@ -176,7 +176,7 @@ The project uses Jest for testing with TypeScript support. Tests are located in 
 
 ### Running Tests
 
-_Reminder to set your environment variables in the `.env` file._ If you want to use a different set of mock endpoints for testing, you can updated the environment variables in the `.env` file directly.
+_Reminder to set your environment variables in the `.env` file._ If you'd like to use a different set of mock endpoints for testing, you may update the `.env` file directly with your mock env variables.
 
 ```bash
 # Run all tests
