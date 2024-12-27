@@ -2,9 +2,9 @@
 
 # Ethereum Transaction Decoder
 
-A crypto app for decoding/visualizing ETH traces via a nested table visualization. 
+A crypto app for decoding/visualizing ETH traces via a nested table visualization.
 
-<img width="2049" alt="Screenshot 2024-12-27 at 10 03 08 AM" src="https://github.com/user-attachments/assets/dfc48e1c-2907-4b4f-91cb-d27b26ef8af7" />
+<img width="2049" alt="Screenshot 2024-12-27 at 10 26 23 AM" src="https://github.com/user-attachments/assets/6b819438-9645-4c2c-9a80-b5f1bba7c2db" />
 
 [Etherescan decoder tool used as inspiration](https://etherscan.io/tx-decoder?tx=0x3346fb99ba272d13dff23d17a045d491d5d55dd46b01cb5ee1ac7e4df7695746)
 
