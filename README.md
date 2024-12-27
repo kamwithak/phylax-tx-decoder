@@ -238,7 +238,7 @@ Transfer call on ERC20: `0x5fbb01c81068a3cbd69a4fa696db3bafd0afc4dfb7313f2dfbd2e
 
 Flash loan: `0x59405648254f43df953137df40000abcc4193e948fe2d8f7c971213a0d236102`
 
-Withdraw on curve: `0xef2af67c7b1d2d08d11f25238eead77a77e5f93e742025d32ec6cf9357343fed`
+Withdraw: `0xef2af67c7b1d2d08d11f25238eead77a77e5f93e742025d32ec6cf9357343fed`
 
 I am pasting these ^ failed tx addresses to bring clarity to the cases where the application breaks. To understand why, please read below. Granted more time, I'd want to more gracefully handle these cases and provide a better user experience.
 
