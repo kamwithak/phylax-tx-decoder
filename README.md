@@ -55,8 +55,8 @@ try {
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/your-username/ethereum-tx-decoder.git
-cd ethereum-tx-decoder
+git clone https://github.com/kamwithak/phylax-tx-decoder
+cd phylax-tx-decoder
 ```
 
 2. Install dependencies:
