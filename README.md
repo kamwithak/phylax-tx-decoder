@@ -63,7 +63,7 @@ cd ethereum-tx-decoder
 2. Install dependencies:
 
 ```bash
-npm install
+yarn install
 ```
 
 3. Create a `.env` file in the root directory:
@@ -79,7 +79,7 @@ NEXT_PUBLIC_WC_PROJECT_ID=your_wallet_connect_project_id
 Run the development server:
 
 ```bash
-npm run dev
+yarn dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
@@ -88,14 +88,35 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ```
 ├── app/
-│   ├── api/                 # API routes
-│   ├── components/          # React components
-│   ├── hooks/               # Custom React hooks
-│   └── types/               # TypeScript type definitions
-├── lib/                     # Utility functions and services
-├── public/                  # Static assets
-└── types/                   # Global type definitions
+│   ├── api/                  # API routes for contract name resolution
+│   ├── components/           # React components
+│   │   ├── AddressDisplay    # Wallet address formatting
+│   │   ├── ConnectButton     # Wallet connection UI
+│   │   ├── ExecutionTrace    # Transaction trace visualization
+│   │   ├── Footer            # Site footer
+│   │   ├── NavBar            # Navigation with external links
+│   │   ├── TransactionData   # Transaction details display
+│   │   └── TransactionInput  # Hash input form
+│   ├── hooks/                # Custom React hooks
+│   │   └── useContractNames  # Contract name fetching
+│   ├── config.ts             # Wagmi configuration
+│   ├── providers.tsx         # React providers setup
+│   └── layout.tsx            # Root layout with providers
+├── lib/
+│   ├── __tests__/            # Jest test files
+│   ├── ethereum.ts           # Core transaction processing
+│   └── types.ts              # Shared type definitions
+├── types/
+│   └── transaction.ts        # Transaction-specific types
+├── jest.setup.ts             # Test configuration
+└── package.json              # Project dependencies
 ```
+
+Key directories:
+- `app/`: Next.js 13+ app directory structure
+- `lib/`: Core business logic and utilities
+- `types/`: TypeScript type definitions
+- `__tests__/`: Jest test files and mocks
 
 ## Dependencies
 
@@ -160,13 +181,13 @@ _Reminder to set your environment variables in the `.env` file._ If you want to 
 
 ```bash
 # Run all tests
-npm test
+yarn test
 
 # Run tests in watch mode
-npm run test:watch
+yarn test:watch
 
 # Run tests with coverage
-npm test -- --coverage
+yarn test -- --coverage
 ```
 
 ### Test Structure
@@ -202,17 +223,19 @@ it('should fetch and decode a basic transaction', async () => {
 - Network interactions
 - Contract name resolution
 
-## Limitations
+## Limitations and Improvements
 
-Will update today.
+You will notice that the more complicated transactions are not fully decoded. This is due to the fact that we define KNOWN_SIGNATURES in the `ethereum.ts` file. We hardcode a map of known signatures for common ERC20, ERC721, etc. transactions. This is not a comprehensive list and will not work for all transactions
 
-## Trade-offs
+Another limitation is that not all nodes support the `debug_traceTransaction` RPC call. This could be addressed in the future by using a different method to fetch transaction traces. For instance, we could use a more sophisticated method to decode transactions that go beyond the known signatures by using a third-party tool or api service for retrieving a longer list of known signatures.
 
-Will update today.
+Given the fallback method, we are using Etherscan's API to fetch transaction traces. This inherently poses a limitation in that we are limited to the number of requests we can make to the Etherscan API, ie) hitting a rate limit. Or perhaps, if the endpoint is down, we are unable to fetch the transaction traces via our fallback mechanism.
 
-## Improvements
+A fourth limitation is that the application is not fully responsive. It is a single-page application and does not support mobile views. This is a known limitation and could be addressed in the future by giving breakpoints and further consideration for mobile v.s tablet v.s desktop views. This application is not fully responsive to all screen sizes, and was generally built purely as a desktop web application. Granted more time, I would just want to restrict users to use their desktop to view and make use of the application. Skipping that for sake of expediency.
 
-Will update today.
+I think it is obvious that I skipped the part of creating my own base components and base styling for commonly used components. In a production application, I would want to use a styled component library like `MUI` or `Shadcn` (or) perhaps `TailwindCSS` + unstyled components such as `HeadlessUI` or `RadixUI`. I think that defining base components such as buttons, selectors, dialogs, forms, inputs - etc. is a good way to ensure consistency and maintainability of the application. If I approached this application similiarly to https://github.com/kamwithak/arrakis-vaults-flow/tree/main/app/pages/DepositPage - I would have created a base component library for the application, respective pages to take advantage of the server-side rendering that we get from Next.js, and then consume my base components in the respective pages where they are needed to ensure consistency and maintainability of the application across pages generally. Future proofing us in the event that we want to publicly share our own components library with the community. In the interest of time, I decided to skip that step. But most definitely, important to address where components are being reused/redefined and where we could instead avoid repeating ourselves.
+
+I was able to include wallet connect functionality, however, it is not necessarily a feature that is required for this application. It is purely for the sake of the demo and completion of a sample web3 application. However, it is possible to feature gate the main page application from those who are not able to successfully connect their wallets. Skipping that for sake of expediency. The injected provider ie) `MetaMask` and `WalletConnect` are supported in this application as per our `config.ts`. It is relatively easy to integrate `RainbowKit` from this point, however, I decided to skip that for sake of expediency. If you are curious to discuss more about `RainbowKit` and other interesting social (web2) wallet integrations [ie) `Web3Auth` and `Magic`], I'd be happy to discuss in our follow-up interview.
 
 ## Contributing
 
