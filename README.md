@@ -1,4 +1,4 @@
-**Please come back EOD Friday December 27th for an updated README**
+**Please come back EOD Friday December 27th for a finalized tech d
 
 # Ethereum Transaction Decoder
 
