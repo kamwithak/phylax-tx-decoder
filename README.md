@@ -9,7 +9,7 @@ A crypto app for decoding/visualizing ETH traces via a nested table visualizatio
 
 ## Features
 
-- Decode transaction input data and method calls
+- Decode transaction data and method calls via a user inputed transaction address
 - Visualize nested contract interactions (shows contract names and addresses) via a nested table ie) _Execution Trace_
 - Display native `ETH` value transfers including `from` and `to` addresses ie) _Transaction Overview_
 - Displays the hash of each function selector alongside their respective decoded parameters  ie) _Transaction Data_
