@@ -1,4 +1,4 @@
-# Ethereum Transaction Decoder
+# Phylax Systems Inc. - Transaction Decoder
 
 A crypto app for decoding/visualizing ETH traces via a nested table visualization.
 
