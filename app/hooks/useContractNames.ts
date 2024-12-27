@@ -1,7 +1,7 @@
 "use client";
 
-import { ContractNames } from "@/types/transaction";
 import { useState, useEffect, useCallback } from "react";
+import { ContractNames } from "./types";
 
 export function useContractNames(addresses: string[]) {
   const [contractNames, setContractNames] = useState<ContractNames>({});
