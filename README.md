@@ -4,9 +4,9 @@
 
 A crypto app for decoding/visualizing ETH traces via a nested table visualization. 
 
-[Preview](https://github.com/user-attachments/assets/2ecb704d-3064-4b6f-ad41-7c8ff7f28cb1)
+<img width="2049" alt="Screenshot 2024-12-27 at 10 03 08 AM" src="https://github.com/user-attachments/assets/dfc48e1c-2907-4b4f-91cb-d27b26ef8af7" />
 
-Inspired by [Etherscan decoder tool](https://etherscan.io/tx-decoder?tx=0x3346fb99ba272d13dff23d17a045d491d5d55dd46b01cb5ee1ac7e4df7695746)
+[Etherescan decoder tool used as inspiration](https://etherscan.io/tx-decoder?tx=0x3346fb99ba272d13dff23d17a045d491d5d55dd46b01cb5ee1ac7e4df7695746)
 
 ## Features
 
