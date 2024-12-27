@@ -191,7 +191,7 @@ export async function fetchAndDecodeTransaction(
   }
 }
 
-function processTraceData(trace: TraceCall): ExecutionTrace[] {
+export function processTraceData(trace: TraceCall): ExecutionTrace[] {
   if (!trace || typeof trace !== "object") {
     throw new Error("Invalid trace data format");
   }
